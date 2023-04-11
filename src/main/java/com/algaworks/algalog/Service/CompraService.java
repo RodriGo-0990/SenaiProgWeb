@@ -1,58 +1,56 @@
 package com.algaworks.algalog.Service;
 
+import com.algaworks.algalog.DTOs.CompraDTO;
+import com.algaworks.algalog.entity.Cliente;
+import com.algaworks.algalog.entity.Compra;
+import com.algaworks.algalog.entity.Produto;
+import com.algaworks.algalog.repository.CompraRepository;
+import com.algaworks.algalog.repository.ProdutoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.algaworks.algalog.entity.Compra;
-import com.algaworks.algalog.repository.CompraRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.algaworks.algalog.entity.Compra;
-import com.algaworks.algalog.repository.CompraRepository;
-
 @Service
 public class CompraService {
-	
-	@Autowired
-	private CompraRepository repo ;
 
-	public Optional<Compra> findById(Long id) {
-		return repo.findById(id);
-	}
+   private final ProdutoService produtoService;
+   private final ClienteService clienteService;
+   private final CompraRepository compraRepository;
 
-	public Compra save(Compra compra, String produto, Double preco) {
-		compra.setProduto(produto);
-		compra.setPreco(preco);
-		return repo.save(compra);
-	}
+   public CompraService(ProdutoService produtoRepo,ClienteService clienteRepo, CompraRepository compraRepo ){
+        this.produtoService = produtoRepo;
+        this.clienteService = clienteRepo;
+        this.compraRepository = compraRepo;
+   }
 
-	public void delete(Long id) {
-		Compra compra = repo.findById(id).get();
-		repo.delete(compra);
-	}
+    public void inserirCompra(CompraDTO compraDTO) throws Exception {
+       Compra compra = new Compra();
+       Optional<Produto> produto = produtoService.findById(compraDTO.getProduto());
+       Optional<Cliente> cliente = clienteService.findById(compraDTO.getCliente());;
+        if(produto.isPresent() && cliente.isPresent()){
+            compra.setProduto(produto.get());
+            compra.setCliente(cliente.get());
+            compra.setValor(produto.get().getPreco());
+            compraRepository.save(compra);
+        }else {
+            throw new Exception("dados inválidos");
+        }
+    }
 
-	public List<Compra> listAll(){
-		return repo.findAll();
-	}
-	public long count() {
-		return repo.count();
-	}
+    public Optional<Cliente> findById(Long id) {
+        return clienteService.findById(id);
+    }
+    public void delete(Long id) {
+        Compra compra = compraRepository.findById(id).get();
+        compraRepository.delete(compra);
+    }
 
-	public void alterarNomeProduto(String produto , Long id) {
-		Optional<Compra> compra = repo.findById(id);
-		if (Optional.ofNullable(compra).isPresent()) {
-			compra.get().setProduto(produto);
-			repo.save(compra.get());
-		}
-	}
-	public void alterarPreco(Double preco , Long id) {
-		Optional<Compra> compra = repo.findById(id);
-		if (Optional.ofNullable(compra).isPresent()) {
-			compra.get().setPreco(preco);
-			repo.save(compra.get());
-		}
-	}
+    public List<Compra> listAll(){
+        return compraRepository.findAll();
+    }
+    public long count() {
+        return compraRepository.count();
+    }
 
 }

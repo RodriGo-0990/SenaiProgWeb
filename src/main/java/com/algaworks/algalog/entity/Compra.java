@@ -1,27 +1,26 @@
 package com.algaworks.algalog.entity;
 
-import javax.persistence.*;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
 
 @Setter
 @Getter
 @Entity
 public class Compra {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	public Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	public String produto;
+    @OneToOne
+    @JoinColumn(name = "cliente")
+    private Cliente cliente;
 
-	public Double preco;
+    @ManyToOne
+    @JoinColumn(name = "produto")
+    private Produto produto;
 
-	@OneToOne
-	@JoinColumn(name = "cliente")
-	public Cliente cliente;
-
-	
-	
+    private double valor;
 }

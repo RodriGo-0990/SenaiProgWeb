@@ -73,7 +73,7 @@ public class ClienteController {
     }
 
     //contar quantidade de Registros
-    @GetMapping(value = "contar")
+    @GetMapping(value = "/contar")
     public Long contarQuantidadeRegistros(){
         return service.count();
     }

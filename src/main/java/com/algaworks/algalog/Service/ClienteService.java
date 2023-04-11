@@ -1,7 +1,6 @@
 package com.algaworks.algalog.Service;
 
 import com.algaworks.algalog.entity.Cliente;
-import com.algaworks.algalog.entity.Compra;
 import com.algaworks.algalog.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
